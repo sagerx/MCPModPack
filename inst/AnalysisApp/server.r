@@ -10,12 +10,12 @@ digits = 3
 
 shinyServer(function(input, output, session) {
   
-  shinyFileChoose(input, 'file', roots=c(sim = '.'))
+  shinyFileChoose(input, 'file', roots=c(sim = '~'))
   
   data_sets <- reactiveValues()
   
   observeEvent(input$file,{
-    paths <- parseFilePaths(roots=c(sim='.'), input$file)
+    paths <- parseFilePaths(roots=c(sim='~'), input$file)
     if(NROW(paths))
       data_sets$data_set <- read.csv(paths$datapath[1], header = TRUE, na = ".", stringsAsFactors = FALSE)
   })
