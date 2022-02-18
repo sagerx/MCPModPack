@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyFiles)
 
 DF_endpoint_list = c("Normal", "Binary", "Count")
 DF_model_list = c("Linear", "Quadratic", "Exponential", "Emax", "Logistic", "SigEmax")
@@ -8,38 +9,25 @@ n_models = length(DF_model_list)
 digits = 3
 
 shinyServer(function(input, output, session) {
-
-
-  GetDataSet = reactive({
-
-      validate(
-        need(input$data_set, message = "Error: Please load the trial's data set.")
-      )
-
-      data_set_object = input$data_set
-
-      if (is.null(data_set_object)) return(NULL)
-
-      tryCatch({
-          data_set = read.csv(data_set_object$datapath, header = TRUE, na = ".", stringsAsFactors = FALSE)
-        },
-        error = function(e) {
-          # return a safeError if a parsing error occurs
-          stop(safeError(e))
-        }
-      )
-              
-      return(data_set)
+  
+  shinyFileChoose(input, 'file', roots=c(sim = '.'))
+  
+  data_sets <- reactiveValues()
+  
+  observeEvent(input$file,{
+    paths <- parseFilePaths(roots=c(sim='.'), input$file)
+    if(NROW(paths))
+      data_sets$data_set <- read.csv(paths$datapath[1], header = TRUE, na = ".", stringsAsFactors = FALSE)
   })
 
   output$error_message <- renderText({ 
       
       # Open the trial data set  
       validate(
-        need(input$data_set, message = "Error: Please load the trial's data set.")
+        need(data_sets$data_set, message = "Error: Please load the trial's data set.")
       )
-
-      data_set = GetDataSet()  
+      
+      data_set = data_sets$data_set  
 
       # Check that the dose and resp variables are defined
       validate(
@@ -71,10 +59,9 @@ shinyServer(function(input, output, session) {
 
   })
 
-
   RunMCPModAnalysis = reactive({
     # Open the trial data set  
-    data_set = GetDataSet()  
+    data_set = data_sets$data_set  
 
     # List of candidate dose-response models
     models = list()
@@ -587,7 +574,7 @@ shinyServer(function(input, output, session) {
     data_frame
   })
 
-output$DoseResponseModel = renderPlot({
+  output$DoseResponseModel = renderPlot({
 
   results = RunMCPModAnalysis()
 

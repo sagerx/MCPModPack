@@ -40,7 +40,11 @@ shinyUI(
                 width = NULL,
 
                 tags$p("Select a data set with the dose and response information (comma-separated value file):"),
-                fileInput('data_set', '', accept = c('.csv') ),
+                #fileInput('data_set', '', accept = c('.csv') ),
+                shinyFilesButton(id = 'file', 
+                                 label='File select', 
+                                 title='Please select a file', 
+                                 multiple=FALSE),
                 tags$p(class = "help-block",
                   "The data set is required to include the dose and resp variables with a single record per patient.")
 
