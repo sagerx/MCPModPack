@@ -8,12 +8,9 @@ DF_model_parameters = list(c("e0", "delta"), c("e0", "delta1", "delta2"), c("e0"
 n_models = length(DF_model_list)
 digits = 3
 
-if(!exists('this_dir'))
-  this_dir <- '.'
-
 shinyServer(function(input, output, session) {
   
-  shinyFileChoose(input, 'file', roots=c(sim = this_dir))
+  shinyFileChoose(input, 'file', roots=c(sim = '.'))
   
   data_sets <- reactiveValues()
   

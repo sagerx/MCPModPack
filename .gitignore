@@ -7,3 +7,4 @@ MCPModPack.Rproj
 man/.Rhistory
 src/*.o
 src/*.so
+src/*.dll
