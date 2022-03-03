@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
   data_sets <- reactiveValues()
   
   observeEvent(input$file,{
-    paths <- parseFilePaths(roots=c(sim=this_dir), input$file)
+    paths <- parseFilePaths(roots=c(sim='.'), input$file)
     if(NROW(paths))
       data_sets$data_set <- read.csv(paths$datapath[1], header = TRUE, na = ".", stringsAsFactors = FALSE)
   })
